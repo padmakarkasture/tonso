@@ -10,8 +10,7 @@
 // Access token for your app
 // (copy token from DevX getting started page
 // and save it as environment variable into the .env file)
-const token = "EAAKsVCutmj0BOxcnY9IvwJalDZC3p79TqvmyJlX6GZCi3xZA0YxM6W6ZBb672DnI8RI7xvORSn5WPz2Sj6vWhC3v3MeO1VunZCwtZC7z1DtsGd0mweCKNUH82r9qwjICJlFY4ZCnHa3HcJsS3oMCfTr9MTExexbgCFnq1YfK2ZB47DZAV5j2FldJxRebisCh9FKHL9VQNfF10fMPIibz8D6cZD";
-
+const token = process.env.WHATSAPP_TOKEN
 // Imports dependencies and set up http server
 const request = require("request"),
   express = require("express"),
@@ -80,7 +79,7 @@ app.get("/webhook", (req, res) => {
    *This will be the Verify Token value when you set up webhook
   **/
  console.log("req",req.query)
-  const verify_token = 'HAPPY';
+  const verify_token = process.env.VERIFY_TOKEN;
   console.log(verify_token)
 
   // Parse params from the webhook verification request
