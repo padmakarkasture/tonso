@@ -10,7 +10,7 @@
 // Access token for your app
 // (copy token from DevX getting started page
 // and save it as environment variable into the .env file)
-const token = process.env.WHATSAPP_TOKEN;
+const token = "EAAKsVCutmj0BOxcnY9IvwJalDZC3p79TqvmyJlX6GZCi3xZA0YxM6W6ZBb672DnI8RI7xvORSn5WPz2Sj6vWhC3v3MeO1VunZCwtZC7z1DtsGd0mweCKNUH82r9qwjICJlFY4ZCnHa3HcJsS3oMCfTr9MTExexbgCFnq1YfK2ZB47DZAV5j2FldJxRebisCh9FKHL9VQNfF10fMPIibz8D6cZD";
 
 // Imports dependencies and set up http server
 const request = require("request"),
@@ -23,12 +23,12 @@ const request = require("request"),
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
 // Accepts POST requests at /webhook endpoint
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   // Parse the request body from the POST
   let body = req.body;
 
   // Check the Incoming webhook message
-  console.log(JSON.stringify(req.body, null, 2));
+  // console.log(JSON.stringify(req.body, null, 2));
 
   // info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
   if (req.body.object) {
@@ -43,20 +43,27 @@ app.post("/webhook", (req, res) => {
         req.body.entry[0].changes[0].value.metadata.phone_number_id;
       let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
       let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
-      axios({
-        method: "POST", // Required, HTTP method, a string, e.g. POST, GET
-        url:
-          "https://graph.facebook.com/v12.0/" +
-          phone_number_id +
-          "/messages?access_token=" +
-          token,
-        data: {
-          messaging_product: "whatsapp",
-          to: from,
-          text: { body: "Ack: " + msg_body },
-        },
-        headers: { "Content-Type": "application/json" },
-      });
+      console.log(msg_body)
+      try {
+        const result =await axios({
+          method: "POST", // Required, HTTP method, a string, e.g. POST, GET
+          url:
+            "https://graph.facebook.com/v12.0/" +
+            phone_number_id +
+            "/messages?access_token=" +
+            token,
+          data: {
+            messaging_product: "whatsapp",
+            to: from,
+            text: { body: "Ack: " + msg_body },
+          },
+          headers: { "Content-Type": "application/json" },
+        });
+        
+      } catch (error) {
+        console.log(error)
+      }
+  
     }
     res.sendStatus(200);
   } else {
@@ -72,7 +79,9 @@ app.get("/webhook", (req, res) => {
    * UPDATE YOUR VERIFY TOKEN
    *This will be the Verify Token value when you set up webhook
   **/
-  const verify_token = process.env.VERIFY_TOKEN;
+ console.log("req",req.query)
+  const verify_token = 'HAPPY';
+  console.log(verify_token)
 
   // Parse params from the webhook verification request
   let mode = req.query["hub.mode"];
